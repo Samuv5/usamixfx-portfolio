@@ -1,0 +1,98 @@
+---
+interface Thumb {
+  src: string;
+  alt: string;
+}
+interface Props {
+  thumbnails: Thumb[];
+  startIndex?: number;
+}
+const { thumbnails, startIndex = 0 } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="gallery-grid">
+  {thumbnails.map((thumb, i) => (
+    <article
+      class="reveal card group relative overflow-hidden bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] cursor-pointer transition-all hover:border-[var(--color-accent)]/40"
+      style={`animation-delay:${(i % 2) * 0.1}s`}
+      data-lightbox
+      data-src={`${base}${thumb.src}`}
+      data-alt={thumb.alt}
+      data-index={i}
+    >
+      <div class="w-full aspect-video flex items-center justify-center p-3">
+        <img
+          src={`${base}${thumb.src}`}
+          alt={thumb.alt}
+          loading="lazy"
+          class="max-w-full max-h-full object-contain transition-transform group-hover:scale-[1.02] duration-500"
+        />
+      </div>
+      <div class="absolute top-3 left-3">
+        <span class="tag px-2 py-1 rounded text-[11px] font-mono font-medium bg-black/50 text-white backdrop-blur-sm">
+          #{String(startIndex + i + 1).padStart(2, '0')}
+        </span>
+      </div>
+    </article>
+  ))}
+</div>
+
+<div id="lightbox" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 backdrop-blur-md p-5">
+  <button id="lightbox-close" class="absolute top-5 right-5 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Close">✕</button>
+  <button id="lightbox-prev" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Previous">‹</button>
+  <button id="lightbox-next" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Next">›</button>
+  <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl" />
+  <div id="lightbox-counter" class="absolute bottom-5 left-1/2 -translate-x-1/2 font-mono text-sm text-white/60"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const items = document.querySelectorAll('[data-lightbox]');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCounter = document.getElementById('lightbox-counter');
+  const closeBtn = document.getElementById('lightbox-close');
+  const prevBtn = document.getElementById('lightbox-prev');
+  const nextBtn = document.getElementById('lightbox-next');
+  let current = 0;
+  const total = items.length;
+
+  function open(i) {
+    current = i;
+    const item = items[current];
+    lightboxImg.src = item.dataset.src;
+    lightboxImg.alt = item.dataset.alt;
+    lightboxCounter.textContent = (current + 1) + ' / ' + total;
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  function nav(dir) {
+    current = (current + dir + total) % total;
+    const item = items[current];
+    lightboxImg.src = item.dataset.src;
+    lightboxImg.alt = item.dataset.alt;
+    lightboxCounter.textContent = (current + 1) + ' / ' + total;
+  }
+
+  items.forEach((item, i) => item.addEventListener('click', () => open(i)));
+  closeBtn.addEventListener('click', close);
+  prevBtn.addEventListener('click', () => nav(-1));
+  nextBtn.addEventListener('click', () => nav(1));
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
+  document.addEventListener('keydown', (e) => {
+    if (lightbox.classList.contains('hidden')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') nav(-1);
+    if (e.key === 'ArrowRight') nav(1);
+  });
+})();
+</script>

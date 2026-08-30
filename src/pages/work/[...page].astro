@@ -1,0 +1,37 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import WorkGrid from "../../components/WorkGrid.astro";
+import { thumbnails } from "../../data/thumbnails.js";
+
+export async function getStaticPaths({ paginate }) {
+  return paginate(thumbnails, { pageSize: 3 });
+}
+
+const { page } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout title={`uSamixFX — Work (${page.currentPage}/${page.lastPage})`} description="Minecraft thumbnails by uSamixFX." lang="en">
+  <section class="px-5 pt-32 pb-24">
+    <div class="max-w-4xl mx-auto">
+      <div class="reveal flex items-end justify-between gap-4 mb-12">
+        <h1 class="leading-none tracking-tight" style="font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem);">Work</h1>
+        <span class="font-mono text-sm muted mb-2">{page.start + 1}–{page.end + 1} / {page.total}</span>
+      </div>
+
+      <WorkGrid thumbnails={page.data} startIndex={page.start} />
+
+      <div class="flex items-center justify-between mt-12 font-mono text-sm uppercase tracking-widest">
+        {page.url.prev
+          ? <a href={page.url.prev} class="hover:text-[var(--color-accent)] transition">← Prev</a>
+          : <span class="opacity-30">← Prev</span>}
+        <span class="muted">Page {page.currentPage} / {page.lastPage}</span>
+        {page.url.next
+          ? <a href={page.url.next} class="hover:text-[var(--color-accent)] transition">Next →</a>
+          : <span class="opacity-30">Next →</span>}
+      </div>
+
+      <a href={base} class="inline-block mt-16 font-mono text-sm muted hover:text-[var(--color-accent)] transition">← Back home</a>
+    </div>
+  </section>
+</Layout>
