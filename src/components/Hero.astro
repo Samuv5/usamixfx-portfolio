@@ -6,17 +6,17 @@ const lang = Astro.url.pathname.includes("/es") ? "es" : "en";
 ---
 
 <section class="md:min-h-[100svh] grid md:grid-cols-2 relative overflow-hidden">
-  <div class="flex flex-col justify-center px-5 md:px-12 pt-28 pb-12 md:py-32 relative z-10 order-2 md:order-1">
+  <div class="flex flex-col justify-center px-5 md:px-12 pt-24 pb-8 md:py-32 relative z-10 order-2 md:order-1">
     <div class="absolute top-[10%] left-[-10%] -z-10" data-parallax="0.08">
       <div class="glow glow-float w-[500px] h-[500px] bg-[var(--color-accent)] rounded-full blur-[220px] opacity-[0.1]"></div>
     </div>
 
-    <p class="reveal is-visible font-mono text-[var(--color-accent)] text-sm mb-6 tracking-[0.3em] uppercase" style="animation-delay:0s">{lang === "es" ? "diseño de miniaturas" : "thumbnail design"}</p>
-    <h1 class="reveal is-visible leading-[0.85] tracking-tight mb-8" style="animation-delay:0.1s; font-family: var(--font-display);">
-      <span class="block text-[clamp(3rem,7vw,6rem)] font-medium">uSamix</span>
-      <span class="block text-[clamp(3rem,7vw,6rem)] italic font-medium text-gradient">FX</span>
+    <p class="reveal is-visible font-mono text-[var(--color-accent)] text-sm mb-4 md:mb-6 tracking-[0.3em] uppercase" style="animation-delay:0s">{lang === "es" ? "diseño de miniaturas" : "thumbnail design"}</p>
+    <h1 class="reveal is-visible leading-[0.95] md:leading-[0.85] tracking-tight mb-4 md:mb-8" style="animation-delay:0.1s; font-family: var(--font-display);">
+      <span class="block text-[clamp(2.5rem,12vw,6rem)] font-medium">uSamix</span>
+      <span class="block text-[clamp(2.5rem,12vw,6rem)] italic font-medium text-gradient">FX</span>
     </h1>
-    <p class="reveal is-visible muted text-lg max-w-md leading-relaxed mb-10" style="animation-delay:0.2s">
+    <p class="reveal is-visible muted text-base md:text-lg max-w-md leading-relaxed mb-6 md:mb-10" style="animation-delay:0.2s">
       {lang === "es"
         ? "Miniaturas de Minecraft que llaman la atención y generan clicks. 100K+ vistas para canales de 200K+ subs."
         : "Minecraft thumbnails that grab attention and drive clicks. 100K+ views generated for 200K+ sub channels."}
@@ -32,7 +32,7 @@ const lang = Astro.url.pathname.includes("/es") ? "es" : "en";
     </div>
   </div>
 
-  <div class="relative h-[36vh] md:h-auto overflow-hidden order-1 md:order-2 bg-[var(--color-bg-dark)]">
+  <div class="relative h-[26vh] md:h-auto overflow-hidden order-1 md:order-2 bg-[var(--color-bg-dark)]">
     <div class="absolute inset-0" data-parallax="-0.08">
       <Image src={heroThumbnail} alt="Thumbnail preview" width={1920} quality={90} loading="eager" class="w-full h-full object-cover scale-110" />
     </div>
