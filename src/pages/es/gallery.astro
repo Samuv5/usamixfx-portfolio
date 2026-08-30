@@ -1,9 +1,13 @@
 ---
+import { getImage } from "astro:assets";
 import Layout from "../../layouts/Layout.astro";
 import Lightbox from "../../components/Lightbox.astro";
 import { thumbnails } from "../../data/thumbnails.js";
 
 const base = import.meta.env.BASE_URL;
+const optimized = await Promise.all(
+  thumbnails.map((thumb) => getImage({ src: thumb.image, width: 900 }))
+);
 ---
 
 <Layout title="uSamixFX — Galería completa" description="Todas las miniaturas de Minecraft de uSamixFX." lang="es">
@@ -23,14 +27,16 @@ const base = import.meta.env.BASE_URL;
           <div
             class="group relative overflow-hidden bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-lg shadow-black/40 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-[var(--color-accent)]/10 hover:border-[var(--color-accent)]/40"
             data-lightbox
-            data-src={`${base}${thumb.src}`}
+            data-src={optimized[i].src}
             data-alt={thumb.alt}
           >
             <div class="aspect-video">
               <img
-                src={`${base}${thumb.src}`}
+                src={optimized[i].src}
                 alt={thumb.alt}
                 loading="lazy"
+                width={optimized[i].attributes.width}
+                height={optimized[i].attributes.height}
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
               />
             </div>

@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import Lightbox from "./Lightbox.astro";
 import { thumbnails } from "../data/thumbnails.js";
 
@@ -19,15 +20,14 @@ const galleryHref = lang === "es" ? `${base}es/gallery/` : `${base}gallery/`;
 
       <div class="relative aspect-video max-h-[60vh] mx-auto bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-lg shadow-black/40 flex items-center justify-center overflow-hidden group">
         {thumbnails.map((thumb, i) => (
-          <img
-            src={`${base}${thumb.src}`}
+          <Image
+            src={thumb.image}
             alt={thumb.alt}
+            width={1200}
             loading={i === 0 ? "eager" : "lazy"}
             class="gallery-slide absolute inset-0 w-full h-full object-contain p-4 transition-all duration-700 ease-out hover:scale-[1.02]"
             data-slide={i}
             data-lightbox
-            data-src={`${base}${thumb.src}`}
-            data-alt={thumb.alt}
             style={i === 0 ? "opacity:1; pointer-events:auto" : "opacity:0; pointer-events:none"}
           />
         ))}
