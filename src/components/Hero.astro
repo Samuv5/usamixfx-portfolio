@@ -34,7 +34,7 @@ const lang = Astro.url.pathname.includes("/es") ? "es" : "en";
 
   <div class="relative h-[45vh] md:h-auto overflow-hidden order-1 md:order-2 bg-[var(--color-surface-dark)]">
     <div class="absolute inset-0" data-parallax="-0.08">
-      <Image src={heroThumbnail} alt="Thumbnail preview" width={960} loading="eager" class="w-full h-full object-cover scale-110" />
+      <Image src={heroThumbnail} alt="Thumbnail preview" width={1920} quality={90} loading="eager" class="w-full h-full object-cover scale-110" />
     </div>
     <div class="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-l from-[var(--color-bg-dark)] via-transparent to-transparent opacity-70"></div>
   </div>
