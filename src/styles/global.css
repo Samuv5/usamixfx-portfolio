@@ -239,22 +239,6 @@ html.lenis.lenis-stopped {
   will-change: transform;
 }
 
-.marquee-track {
-  animation: marquee 22s linear infinite;
-  width: max-content;
-}
-
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-  }
-}
-
 @keyframes scroll-line {
   0% { transform: scaleY(0); transform-origin: top; }
   50% { transform: scaleY(1); transform-origin: top; }
