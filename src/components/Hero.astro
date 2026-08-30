@@ -5,8 +5,8 @@ import { heroThumbnail } from "../data/thumbnails.js";
 const lang = Astro.url.pathname.includes("/es") ? "es" : "en";
 ---
 
-<section class="min-h-[100svh] grid md:grid-cols-2 relative overflow-hidden">
-  <div class="flex flex-col justify-center px-5 md:px-12 py-32 relative z-10 order-2 md:order-1">
+<section class="md:min-h-[100svh] grid md:grid-cols-2 relative overflow-hidden">
+  <div class="flex flex-col justify-center px-5 md:px-12 pt-28 pb-12 md:py-32 relative z-10 order-2 md:order-1">
     <div class="absolute top-[10%] left-[-10%] -z-10" data-parallax="0.08">
       <div class="glow glow-float w-[500px] h-[500px] bg-[var(--color-accent)] rounded-full blur-[220px] opacity-[0.1]"></div>
     </div>
@@ -32,14 +32,14 @@ const lang = Astro.url.pathname.includes("/es") ? "es" : "en";
     </div>
   </div>
 
-  <div class="relative h-[50vh] md:h-auto overflow-hidden order-1 md:order-2 bg-[var(--color-bg-dark)]">
+  <div class="relative h-[36vh] md:h-auto overflow-hidden order-1 md:order-2 bg-[var(--color-bg-dark)]">
     <div class="absolute inset-0" data-parallax="-0.08">
       <Image src={heroThumbnail} alt="Thumbnail preview" width={1920} quality={90} loading="eager" class="w-full h-full object-cover scale-110" />
     </div>
     <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-dark)] from-5% via-[var(--color-bg-dark)]/40 via-45% to-transparent md:bg-gradient-to-l md:from-[var(--color-bg-dark)] md:from-0% md:via-[var(--color-bg-dark)]/30 md:via-40% md:to-transparent"></div>
   </div>
 
-  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50 z-20">
+  <div class="hidden md:flex absolute bottom-6 left-1/2 -translate-x-1/2 flex-col items-center gap-2 opacity-50 z-20">
     <span class="font-mono text-[10px] uppercase tracking-[0.3em]">scroll</span>
     <div class="w-px h-8 bg-current scroll-line"></div>
   </div>
