@@ -3,107 +3,76 @@ import { thumbnails } from "../data/thumbnails.js";
 
 const lang = Astro.url.pathname.includes("/es") ? "es" : "en";
 const base = import.meta.env.BASE_URL;
-
-const spans = ["md:col-span-3 md:row-span-2", "md:col-span-3", "md:col-span-2", "md:col-span-2", "md:col-span-2", "md:col-span-3"];
 ---
 
-<section id="gallery" class="py-28 px-5">
-  <div class="max-w-6xl mx-auto">
-    <div class="reveal flex items-end justify-between gap-4 mb-16">
-      <h2 class="leading-none tracking-tight" style="font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem);">
-        {lang === "es" ? "Trabajos" : "Work"}
-      </h2>
-      <span class="font-mono text-sm muted mb-2">{thumbnails.length} thumbnails</span>
-    </div>
+<section id="gallery" class="relative" style={`height: ${thumbnails.length * 100}vh`}>
+  <div class="sticky top-0 h-screen flex flex-col justify-center px-5 overflow-hidden">
+    <div class="max-w-6xl mx-auto w-full">
+      <div class="flex items-end justify-between gap-4 mb-8">
+        <h2 class="leading-none tracking-tight" style="font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem);">
+          {lang === "es" ? "Trabajos" : "Work"}
+        </h2>
+        <span class="font-mono text-sm muted mb-2"><span id="gallery-counter">01</span> / {String(thumbnails.length).padStart(2, '0')}</span>
+      </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-6 gap-5" id="gallery-grid">
-      {thumbnails.map((thumb, i) => (
-        <article
-          class={`reveal group relative overflow-hidden bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl cursor-pointer shadow-lg shadow-black/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-[var(--color-accent)]/10 hover:border-[var(--color-accent)]/40 ${spans[i % spans.length]}`}
-          style={`animation-delay:${(i % 3) * 0.1}s`}
-          data-lightbox
-          data-src={`${base}${thumb.src}`}
-          data-alt={thumb.alt}
-          data-index={i}
-        >
-          <div class="w-full h-full min-h-[14rem] flex items-center justify-center p-4">
-            <img
-              src={`${base}${thumb.src}`}
-              alt={thumb.alt}
-              loading="lazy"
-              class="max-w-full max-h-full object-contain drop-shadow-xl transition-transform duration-500 group-hover:scale-[1.03]"
-            />
-          </div>
-          <div class="absolute top-3 left-3">
-            <span class="tag px-2 py-1 rounded text-[11px] font-mono font-medium bg-black/50 text-white backdrop-blur-sm">
-              #{String(i + 1).padStart(2, '0')}
-            </span>
-          </div>
-        </article>
-      ))}
-    </div>
+      <div class="relative aspect-video max-h-[60vh] mx-auto bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-lg shadow-black/40 flex items-center justify-center overflow-hidden">
+        {thumbnails.map((thumb, i) => (
+          <img
+            src={`${base}${thumb.src}`}
+            alt={thumb.alt}
+            loading={i === 0 ? "eager" : "lazy"}
+            class="gallery-slide absolute inset-0 w-full h-full object-contain p-4 transition-opacity duration-700 ease-out"
+            data-slide={i}
+            style={i === 0 ? "opacity:1" : "opacity:0"}
+          />
+        ))}
+      </div>
 
-    <p class="mt-10 font-mono text-sm muted text-center">
-      {lang === "es" ? "// mas miniaturas en camino" : "// more thumbnails dropping soon"}
-    </p>
+      <div class="flex items-center justify-center gap-2 mt-6">
+        {thumbnails.map((_, i) => (
+          <div class="gallery-dot h-1 rounded-full bg-[var(--color-border-dark)] transition-all duration-500" style="width: 24px" data-dot={i}></div>
+        ))}
+      </div>
+    </div>
   </div>
 
-  <div id="lightbox" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 backdrop-blur-md p-5">
-    <button id="lightbox-close" class="absolute top-5 right-5 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Close">✕</button>
-    <button id="lightbox-prev" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Previous">‹</button>
-    <button id="lightbox-next" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Next">›</button>
-    <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl" />
-    <div id="lightbox-counter" class="absolute bottom-5 left-1/2 -translate-x-1/2 font-mono text-sm text-white/60"></div>
-  </div>
+  {thumbnails.map((_, i) => (
+    <div class="gallery-trigger absolute w-full h-px pointer-events-none" style={`top: ${(i / thumbnails.length) * 100}%`} data-index={i}></div>
+  ))}
 </section>
 
 <script is:inline>
 (function() {
-  const items = document.querySelectorAll('[data-lightbox]');
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.getElementById('lightbox-img');
-  const lightboxCounter = document.getElementById('lightbox-counter');
-  const closeBtn = document.getElementById('lightbox-close');
-  const prevBtn = document.getElementById('lightbox-prev');
-  const nextBtn = document.getElementById('lightbox-next');
-  let current = 0;
-  const total = items.length;
+  const slides = document.querySelectorAll('.gallery-slide');
+  const dots = document.querySelectorAll('.gallery-dot');
+  const triggers = document.querySelectorAll('.gallery-trigger');
+  const counter = document.getElementById('gallery-counter');
+  if (!slides.length) return;
 
-  function open(i) {
-    current = i;
-    const item = items[current];
-    lightboxImg.src = item.dataset.src;
-    lightboxImg.alt = item.dataset.alt;
-    lightboxCounter.textContent = (current + 1) + ' / ' + total;
-    lightbox.classList.remove('hidden');
-    lightbox.classList.add('flex');
-    document.body.style.overflow = 'hidden';
+  function setActive(i) {
+    slides.forEach((s) => s.style.opacity = Number(s.dataset.slide) === i ? "1" : "0");
+    dots.forEach((d) => {
+      const active = Number(d.dataset.dot) === i;
+      d.style.background = active ? "var(--color-accent)" : "var(--color-border-dark)";
+      d.style.width = active ? "40px" : "24px";
+    });
+    if (counter) counter.textContent = String(i + 1).padStart(2, '0');
   }
 
-  function close() {
-    lightbox.classList.add('hidden');
-    lightbox.classList.remove('flex');
-    document.body.style.overflow = '';
+  if (!('IntersectionObserver' in window)) {
+    setActive(0);
+    return;
   }
 
-  function nav(dir) {
-    current = (current + dir + total) % total;
-    const item = items[current];
-    lightboxImg.src = item.dataset.src;
-    lightboxImg.alt = item.dataset.alt;
-    lightboxCounter.textContent = (current + 1) + ' / ' + total;
-  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        setActive(Number(entry.target.dataset.index));
+      }
+    });
+  }, { rootMargin: "-50% 0px -50% 0px", threshold: 0 });
 
-  items.forEach((item, i) => item.addEventListener('click', () => open(i)));
-  closeBtn.addEventListener('click', close);
-  prevBtn.addEventListener('click', () => nav(-1));
-  nextBtn.addEventListener('click', () => nav(1));
-  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
-  document.addEventListener('keydown', (e) => {
-    if (lightbox.classList.contains('hidden')) return;
-    if (e.key === 'Escape') close();
-    if (e.key === 'ArrowLeft') nav(-1);
-    if (e.key === 'ArrowRight') nav(1);
-  });
+  triggers.forEach((t) => observer.observe(t));
+  setActive(0);
 })();
 </script>
