@@ -1,0 +1,66 @@
+<div id="lightbox" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 backdrop-blur-md p-5">
+  <button id="lightbox-close" class="absolute top-5 right-5 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Close">✕</button>
+  <button id="lightbox-prev" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Previous">‹</button>
+  <button id="lightbox-next" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Next">›</button>
+  <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl" />
+  <div id="lightbox-counter" class="absolute bottom-5 left-1/2 -translate-x-1/2 font-mono text-sm text-white/60"></div>
+</div>
+
+<script is:inline>
+(function() {
+  function init() {
+    const items = Array.from(document.querySelectorAll('[data-lightbox]'));
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxCounter = document.getElementById('lightbox-counter');
+    const closeBtn = document.getElementById('lightbox-close');
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+    if (!lightbox || !items.length) return;
+    let current = 0;
+    const total = items.length;
+
+    function show(i) {
+      current = (i + total) % total;
+      const item = items[current];
+      lightboxImg.src = item.dataset.src || item.getAttribute('src');
+      lightboxImg.alt = item.dataset.alt || item.getAttribute('alt') || '';
+      lightboxCounter.textContent = (current + 1) + ' / ' + total;
+    }
+
+    function open(i) {
+      show(i);
+      lightbox.classList.remove('hidden');
+      lightbox.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      lightbox.classList.add('hidden');
+      lightbox.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    items.forEach((item, i) => {
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', () => open(i));
+    });
+    closeBtn.addEventListener('click', close);
+    prevBtn.addEventListener('click', () => show(current - 1));
+    nextBtn.addEventListener('click', () => show(current + 1));
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
+    document.addEventListener('keydown', (e) => {
+      if (lightbox.classList.contains('hidden')) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') show(current - 1);
+      if (e.key === 'ArrowRight') show(current + 1);
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>

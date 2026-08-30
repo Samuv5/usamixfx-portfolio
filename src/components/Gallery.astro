@@ -1,8 +1,10 @@
 ---
+import Lightbox from "./Lightbox.astro";
 import { thumbnails } from "../data/thumbnails.js";
 
 const lang = Astro.url.pathname.includes("/es") ? "es" : "en";
 const base = import.meta.env.BASE_URL;
+const galleryHref = lang === "es" ? `${base}es/gallery/` : `${base}gallery/`;
 ---
 
 <section id="gallery" class="relative" style={`height: ${thumbnails.length * 100}vh`}>
@@ -15,15 +17,18 @@ const base = import.meta.env.BASE_URL;
         <span class="font-mono text-sm muted mb-2"><span id="gallery-counter">01</span> / {String(thumbnails.length).padStart(2, '0')}</span>
       </div>
 
-      <div class="relative aspect-video max-h-[60vh] mx-auto bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-lg shadow-black/40 flex items-center justify-center overflow-hidden">
+      <div class="relative aspect-video max-h-[60vh] mx-auto bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-lg shadow-black/40 flex items-center justify-center overflow-hidden group">
         {thumbnails.map((thumb, i) => (
           <img
             src={`${base}${thumb.src}`}
             alt={thumb.alt}
             loading={i === 0 ? "eager" : "lazy"}
-            class="gallery-slide absolute inset-0 w-full h-full object-contain p-4 transition-opacity duration-700 ease-out"
+            class="gallery-slide absolute inset-0 w-full h-full object-contain p-4 transition-all duration-700 ease-out hover:scale-[1.02]"
             data-slide={i}
-            style={i === 0 ? "opacity:1" : "opacity:0"}
+            data-lightbox
+            data-src={`${base}${thumb.src}`}
+            data-alt={thumb.alt}
+            style={i === 0 ? "opacity:1; pointer-events:auto" : "opacity:0; pointer-events:none"}
           />
         ))}
       </div>
@@ -33,9 +38,17 @@ const base = import.meta.env.BASE_URL;
           <div class="gallery-dot h-1 rounded-full bg-[var(--color-border-dark)] transition-all duration-500" style="width: 24px" data-dot={i}></div>
         ))}
       </div>
+
+      <div class="text-center mt-8">
+        <a href={galleryHref} class="font-mono text-sm muted hover:text-[var(--color-accent)] transition uppercase tracking-widest">
+          {lang === "es" ? `Ver galería completa (${thumbnails.length}) →` : `View full gallery (${thumbnails.length}) →`}
+        </a>
+      </div>
     </div>
   </div>
 </section>
+
+<Lightbox />
 
 <script is:inline>
 (function() {
@@ -49,7 +62,11 @@ const base = import.meta.env.BASE_URL;
   function setActive(i) {
     if (i === current) return;
     current = i;
-    slides.forEach((s) => s.style.opacity = Number(s.dataset.slide) === i ? "1" : "0");
+    slides.forEach((s) => {
+      const active = Number(s.dataset.slide) === i;
+      s.style.opacity = active ? "1" : "0";
+      s.style.pointerEvents = active ? "auto" : "none";
+    });
     dots.forEach((d) => {
       const active = Number(d.dataset.dot) === i;
       d.style.background = active ? "var(--color-accent)" : "var(--color-border-dark)";
