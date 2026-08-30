@@ -3,30 +3,33 @@ const lang = Astro.url.pathname.includes("/es") ? "es" : "en";
 const base = import.meta.env.BASE_URL;
 ---
 
-<section id="about" class="section-alt">
-  <div class="grid md:grid-cols-2">
-    <div class="relative md:sticky md:top-0 md:h-screen overflow-hidden">
-      <img src={`${base}thumbnails/miniatura de chifruit.jpg`} alt="Minecraft thumbnail" class="w-full h-full object-cover" />
-      <div class="absolute inset-0 bg-[var(--color-bg-dark)] opacity-10"></div>
-    </div>
-
-    <div class="px-5 md:px-16 py-24 md:py-40 flex flex-col justify-center gap-10">
-      <p class="reveal font-mono text-[var(--color-accent)] text-sm tracking-[0.3em] uppercase">// {lang === "es" ? "sobre mi" : "about"}</p>
-      <h2 class="reveal tracking-tight leading-[0.95]" style="font-family: var(--font-display); font-size: clamp(2rem, 4.5vw, 3.5rem);">
+<section id="about" class="section-alt py-28 px-5">
+  <div class="max-w-5xl mx-auto grid md:grid-cols-[1.1fr_1fr] gap-16 items-center">
+    <div class="order-2 md:order-1">
+      <p class="reveal font-mono text-[var(--color-accent)] text-sm mb-4 tracking-[0.3em] uppercase">// {lang === "es" ? "sobre mi" : "about"}</p>
+      <h2 class="reveal tracking-tight leading-[0.95] mb-6" style="font-family: var(--font-display); font-size: clamp(2rem, 4.5vw, 3.5rem);">
         {lang === "es"
           ? "Miniaturas que hacen crecer canales de Minecraft."
           : "Thumbnails that grow Minecraft channels."}
       </h2>
-      <p class="reveal muted leading-relaxed text-lg">
+      <p class="reveal muted leading-relaxed text-lg mb-6" style="animation-delay:0.1s">
         {lang === "es"
-          ? "Diseño miniaturas para creadores de Minecraft. Sin click, no hay video — así que hago que la gente le dé click."
-          : "I design thumbnails for Minecraft creators. No click, no video — so I make people click."}
+          ? "Diseñé miniaturas para Chifruit y otros creadores de Minecraft. Sin click, no hay video — así que hago que la gente le dé click."
+          : "I designed thumbnails for Chifruit and other Minecraft creators. No click, no video — so I make people click."}
       </p>
-      <div class="reveal flex flex-wrap gap-2">
+      <div class="reveal flex flex-wrap gap-2" style="animation-delay:0.2s">
         <span class="tag px-3 py-1.5 rounded text-xs font-mono">Minecraft</span>
         <span class="tag px-3 py-1.5 rounded text-xs font-mono">YouTube</span>
         <span class="tag px-3 py-1.5 rounded text-xs font-mono">CTR</span>
         <span class="tag px-3 py-1.5 rounded text-xs font-mono">Photoshop</span>
+      </div>
+    </div>
+
+    <div class="order-1 md:order-2" data-parallax="0.04">
+      <div class="reveal-scale bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-lg shadow-black/40 p-4">
+        <div class="aspect-video flex items-center justify-center">
+          <img src={`${base}thumbnails/miniatura de chifruit.jpg`} alt="Chifruit Minecraft thumbnail" class="max-w-full max-h-full object-contain drop-shadow-xl" />
+        </div>
       </div>
     </div>
   </div>
