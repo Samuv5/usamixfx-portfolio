@@ -9,7 +9,7 @@
 <script is:inline>
 (function() {
   function init() {
-    const items = Array.from(document.querySelectorAll('[data-lightbox]'));
+    const items = Array.from(document.querySelectorAll('[data-lightbox]')).filter((el) => el.offsetParent !== null);
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxCounter = document.getElementById('lightbox-counter');
@@ -23,8 +23,9 @@
     function show(i) {
       current = (i + total) % total;
       const item = items[current];
-      lightboxImg.src = item.dataset.src || item.getAttribute('src');
-      lightboxImg.alt = item.dataset.alt || item.getAttribute('alt') || '';
+      const img = item.tagName === 'IMG' ? item : item.querySelector('img');
+      lightboxImg.src = item.dataset.src || (img && img.src) || '';
+      lightboxImg.alt = item.dataset.alt || (img && img.alt) || '';
       lightboxCounter.textContent = (current + 1) + ' / ' + total;
     }
 

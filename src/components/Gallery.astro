@@ -8,41 +8,74 @@ const base = import.meta.env.BASE_URL;
 const galleryHref = lang === "es" ? `${base}es/gallery/` : `${base}gallery/`;
 ---
 
-<section id="gallery" class="relative" style={`height: ${thumbnails.length * 100}vh`}>
-  <div class="sticky top-0 h-screen flex flex-col justify-center px-5 overflow-hidden">
-    <div class="max-w-6xl mx-auto w-full">
-      <div class="flex items-end justify-between gap-4 mb-8">
-        <h2 class="leading-none tracking-tight" style="font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem);">
-          {lang === "es" ? "Trabajos" : "Work"}
-        </h2>
-        <span class="font-mono text-sm muted mb-2"><span id="gallery-counter">01</span> / {String(thumbnails.length).padStart(2, '0')}</span>
-      </div>
+<section id="gallery">
+  <!-- Mobile: native horizontal scroll-snap carousel, no scroll-jacking -->
+  <div class="md:hidden py-20 px-5">
+    <div class="flex items-end justify-between gap-4 mb-8">
+      <h2 class="leading-none tracking-tight" style="font-family: var(--font-display); font-size: clamp(2.5rem, 10vw, 3.5rem);">
+        {lang === "es" ? "Trabajos" : "Work"}
+      </h2>
+      <span class="font-mono text-sm muted mb-2">{thumbnails.length} thumbnails</span>
+    </div>
 
-      <div class="relative aspect-video max-h-[60vh] mx-auto bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-lg shadow-black/40 flex items-center justify-center overflow-hidden group">
-        {thumbnails.map((thumb, i) => (
-          <Image
-            src={thumb.image}
-            alt={thumb.alt}
-            width={1200}
-            loading={i === 0 ? "eager" : "lazy"}
-            class="gallery-slide absolute inset-0 w-full h-full object-contain p-4 transition-all duration-700 ease-out hover:scale-[1.02]"
-            data-slide={i}
-            data-lightbox
-            style={i === 0 ? "opacity:1; pointer-events:auto" : "opacity:0; pointer-events:none"}
-          />
-        ))}
-      </div>
+    <div class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-5 px-5" style="scroll-padding-left: 1.25rem;">
+      {thumbnails.map((thumb, i) => (
+        <div
+          class="snap-center shrink-0 w-[85%] aspect-video rounded-xl overflow-hidden bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] shadow-lg shadow-black/40 relative"
+          data-lightbox
+        >
+          <Image src={thumb.image} alt={thumb.alt} width={900} loading={i === 0 ? "eager" : "lazy"} class="w-full h-full object-cover" />
+          <span class="absolute top-3 left-3 tag px-2 py-1 rounded text-[11px] font-mono font-medium bg-black/50 text-white backdrop-blur-sm">
+            #{String(i + 1).padStart(2, '0')}
+          </span>
+        </div>
+      ))}
+    </div>
 
-      <div class="flex items-center justify-center gap-2 mt-6">
-        {thumbnails.map((_, i) => (
-          <div class="gallery-dot h-1 rounded-full bg-[var(--color-border-dark)] transition-all duration-500" style="width: 24px" data-dot={i}></div>
-        ))}
-      </div>
+    <div class="text-center mt-6">
+      <a href={galleryHref} class="font-mono text-sm muted hover:text-[var(--color-accent)] transition uppercase tracking-widest">
+        {lang === "es" ? `Ver galería completa (${thumbnails.length}) →` : `View full gallery (${thumbnails.length}) →`}
+      </a>
+    </div>
+  </div>
 
-      <div class="text-center mt-8">
-        <a href={galleryHref} class="font-mono text-sm muted hover:text-[var(--color-accent)] transition uppercase tracking-widest">
-          {lang === "es" ? `Ver galería completa (${thumbnails.length}) →` : `View full gallery (${thumbnails.length}) →`}
-        </a>
+  <!-- Desktop: scroll-driven single-image slideshow -->
+  <div class="hidden md:block relative" style={`height: ${thumbnails.length * 100}vh`}>
+    <div class="sticky top-0 h-screen flex flex-col justify-center px-5 overflow-hidden">
+      <div class="max-w-6xl mx-auto w-full">
+        <div class="flex items-end justify-between gap-4 mb-8">
+          <h2 class="leading-none tracking-tight" style="font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem);">
+            {lang === "es" ? "Trabajos" : "Work"}
+          </h2>
+          <span class="font-mono text-sm muted mb-2"><span id="gallery-counter">01</span> / {String(thumbnails.length).padStart(2, '0')}</span>
+        </div>
+
+        <div class="relative aspect-video max-h-[60vh] mx-auto bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-lg shadow-black/40 flex items-center justify-center overflow-hidden group">
+          {thumbnails.map((thumb, i) => (
+            <Image
+              src={thumb.image}
+              alt={thumb.alt}
+              width={1200}
+              loading={i === 0 ? "eager" : "lazy"}
+              class="gallery-slide absolute inset-0 w-full h-full object-contain p-4 transition-all duration-700 ease-out hover:scale-[1.02]"
+              data-slide={i}
+              data-lightbox
+              style={i === 0 ? "opacity:1; pointer-events:auto" : "opacity:0; pointer-events:none"}
+            />
+          ))}
+        </div>
+
+        <div class="flex items-center justify-center gap-2 mt-6">
+          {thumbnails.map((_, i) => (
+            <div class="gallery-dot h-1 rounded-full bg-[var(--color-border-dark)] transition-all duration-500" style="width: 24px" data-dot={i}></div>
+          ))}
+        </div>
+
+        <div class="text-center mt-8">
+          <a href={galleryHref} class="font-mono text-sm muted hover:text-[var(--color-accent)] transition uppercase tracking-widest">
+            {lang === "es" ? `Ver galería completa (${thumbnails.length}) →` : `View full gallery (${thumbnails.length}) →`}
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -52,6 +85,8 @@ const galleryHref = lang === "es" ? `${base}es/gallery/` : `${base}gallery/`;
 
 <script is:inline>
 (function() {
+  if (!window.matchMedia('(min-width: 768px)').matches) return;
+
   const section = document.getElementById('gallery');
   const slides = document.querySelectorAll('.gallery-slide');
   const dots = document.querySelectorAll('.gallery-dot');
