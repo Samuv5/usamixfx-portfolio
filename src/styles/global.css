@@ -133,6 +133,7 @@ html.light #lightbox-counter {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  -webkit-text-fill-color: transparent;
   animation: gradient-shift 4s ease-in-out infinite;
 }
 
@@ -222,6 +223,22 @@ html.lenis.lenis-stopped {
 
 [data-parallax] {
   will-change: transform;
+}
+
+.marquee-track {
+  animation: marquee 22s linear infinite;
+  width: max-content;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
 }
 
 @keyframes scroll-line {
