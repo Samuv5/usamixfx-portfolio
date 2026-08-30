@@ -1,0 +1,111 @@
+---
+const lang = Astro.url.pathname.includes("/es") ? "es" : "en";
+const base = import.meta.env.BASE_URL;
+const thumbnails = [
+  { src: `${base}thumbnails/New Project (11).png`, alt: "Thumbnail Minecraft 4", span: "md:col-span-2" },
+  { src: `${base}thumbnails/New Project (1).png`, alt: "Thumbnail Minecraft 1", span: "" },
+  { src: `${base}thumbnails/New Project (3).png`, alt: "Thumbnail Minecraft 2", span: "" },
+  { src: `${base}thumbnails/New Project (4) (3).png`, alt: "Thumbnail Minecraft 3", span: "" },
+  { src: `${base}thumbnails/miniatura de chifruit.jpg`, alt: "Thumbnail Chifruit", span: "md:col-span-2" },
+  { src: `${base}thumbnails/uFywkZyPL5Q-HD.jpg`, alt: "Thumbnail YouTube", span: "" },
+];
+---
+
+<section id="gallery" class="py-28 px-5">
+  <div class="max-w-6xl mx-auto">
+    <div class="reveal flex items-end justify-between gap-4 mb-16">
+      <h2 class="leading-none tracking-tight" style="font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem);">
+        {lang === "es" ? "Trabajos" : "Work"}
+      </h2>
+      <span class="font-mono text-sm muted mb-2">{thumbnails.length} thumbnails</span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="gallery-grid">
+      {thumbnails.map((thumb, i) => (
+        <article
+          class={`reveal card group relative overflow-hidden bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] cursor-pointer transition-all hover:border-[var(--color-accent)]/40 ${thumb.span}`}
+          style={`animation-delay:${(i % 3) * 0.1}s`}
+          data-lightbox
+          data-src={thumb.src}
+          data-alt={thumb.alt}
+          data-index={i}
+        >
+          <img
+            src={thumb.src}
+            alt={thumb.alt}
+            loading="lazy"
+            class="w-full h-56 md:h-72 object-cover transition-transform group-hover:scale-[1.03] duration-500"
+          />
+          <div class="absolute top-3 left-3">
+            <span class="tag px-2 py-1 rounded text-[11px] font-mono font-medium bg-black/50 text-white backdrop-blur-sm">
+              #{String(i + 1).padStart(2, '0')}
+            </span>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <p class="mt-8 font-mono text-sm muted text-center">
+      {lang === "es" ? "// mas miniaturas en camino" : "// more thumbnails dropping soon"}
+    </p>
+  </div>
+
+  <div id="lightbox" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/90 backdrop-blur-md p-5">
+    <button id="lightbox-close" class="absolute top-5 right-5 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Close">✕</button>
+    <button id="lightbox-prev" class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Previous">‹</button>
+    <button id="lightbox-next" class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white text-xl hover:bg-white/20 transition" aria-label="Next">›</button>
+    <img id="lightbox-img" src="" alt="" class="max-w-[90vw] max-h-[85vh] object-contain rounded-lg shadow-2xl" />
+    <div id="lightbox-counter" class="absolute bottom-5 left-1/2 -translate-x-1/2 font-mono text-sm text-white/60"></div>
+  </div>
+</section>
+
+<script is:inline>
+(function() {
+  const items = document.querySelectorAll('[data-lightbox]');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightbox-img');
+  const lightboxCounter = document.getElementById('lightbox-counter');
+  const closeBtn = document.getElementById('lightbox-close');
+  const prevBtn = document.getElementById('lightbox-prev');
+  const nextBtn = document.getElementById('lightbox-next');
+  let current = 0;
+  const total = items.length;
+
+  function open(i) {
+    current = i;
+    const item = items[current];
+    lightboxImg.src = item.dataset.src;
+    lightboxImg.alt = item.dataset.alt;
+    lightboxCounter.textContent = (current + 1) + ' / ' + total;
+    lightbox.classList.remove('hidden');
+    lightbox.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    lightbox.classList.add('hidden');
+    lightbox.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+
+  function nav(dir) {
+    current = (current + dir + total) % total;
+    const item = items[current];
+    lightboxImg.src = item.dataset.src;
+    lightboxImg.alt = item.dataset.alt;
+    lightboxCounter.textContent = (current + 1) + ' / ' + total;
+  }
+
+  items.forEach((item, i) => item.addEventListener('click', () => open(i)));
+  closeBtn.addEventListener('click', close);
+  prevBtn.addEventListener('click', () => nav(-1));
+  nextBtn.addEventListener('click', () => nav(1));
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
+  document.addEventListener('keydown', (e) => {
+    if (lightbox.classList.contains('hidden')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') nav(-1);
+    if (e.key === 'ArrowRight') nav(1);
+  });
+})();
+</script>
