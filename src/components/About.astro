@@ -26,9 +26,9 @@ const base = import.meta.env.BASE_URL;
     </div>
 
     <div class="mt-10 md:mt-0" data-parallax="0.04">
-      <div class="reveal-scale bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-lg shadow-black/40 p-4">
-        <div class="aspect-video flex items-center justify-center">
-          <img src={`${base}thumbnails/miniatura de chifruit.jpg`} alt="Chifruit Minecraft thumbnail" class="max-w-full max-h-full object-contain drop-shadow-xl" />
+      <div class="reveal-scale bg-[var(--color-surface-dark)] border border-[var(--color-border-dark)] rounded-xl shadow-lg shadow-black/40 overflow-hidden">
+        <div class="aspect-video">
+          <img src={`${base}thumbnails/miniatura de chifruit.jpg`} alt="Chifruit Minecraft thumbnail" class="w-full h-full object-cover" />
         </div>
       </div>
     </div>
