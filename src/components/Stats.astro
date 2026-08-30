@@ -1,0 +1,16 @@
+---
+const lang = Astro.url.pathname.includes("/es") ? "es" : "en";
+---
+
+<section class="border-y border-[var(--color-border-dark)] py-16 px-5">
+  <div class="max-w-6xl mx-auto grid grid-cols-2 divide-x divide-[var(--color-border-dark)]">
+    <div class="reveal text-center px-4">
+      <span class="block leading-none mb-2" style="font-family: var(--font-display); font-size: clamp(3rem, 8vw, 5.5rem);">100<span class="text-[var(--color-accent)]">K+</span></span>
+      <span class="muted text-sm uppercase tracking-widest">{lang === "es" ? "vistas generadas" : "views generated"}</span>
+    </div>
+    <div class="reveal text-center px-4" style="animation-delay:0.1s">
+      <span class="block leading-none mb-2" style="font-family: var(--font-display); font-size: clamp(3rem, 8vw, 5.5rem);">6<span class="text-[var(--color-accent)]">+</span></span>
+      <span class="muted text-sm uppercase tracking-widest">{lang === "es" ? "clientes" : "clients"}</span>
+    </div>
+  </div>
+</section>
